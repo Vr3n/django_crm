@@ -2,81 +2,81 @@
 
 {% block content %}
 
-	<br>
+    <br>
 
 <div class="row">
-	<div class="col-md">
-		<div class="card card-body">
-			<h5>Customer:</h5>
-			<hr>
-			<a class="btn btn-outline-info  btn-sm btn-block" href="">Update Customer</a>
-			<a class="btn btn-outline-danger  btn-sm btn-block" href="">Delete Customer</a>
+    <div class="col-md">
+        <div class="card card-body">
+            <h5>Customer:</h5>
+            <hr>
+            <a class="btn btn-outline-info  btn-sm btn-block" href="">Update Customer</a>
+            <a class="btn btn-outline-danger  btn-sm btn-block" href="">Delete Customer</a>
 
-		</div>
-	</div>
+        </div>
+    </div>
 
-	<div class="col-md">
-		<div class="card card-body">
-			<h5>Contact Information</h5>
-			<hr>
-			<p><b>Email:</b> {{ customer.email }}</p>
-			<p><b>Phone:</b> {{ customer.phone }}</p>
-		</div>
-	</div>
+    <div class="col-md">
+        <div class="card card-body">
+            <h5>Contact Information</h5>
+            <hr>
+            <p><b>Email:</b> {{ customer.email }}</p>
+            <p><b>Phone:</b> {{ customer.phone }}</p>
+        </div>
+    </div>
 
-	<div class="col-md">
-		<div class="card card-body">
-			<h5>Total Orders</h5>
-			<hr>
-			<h1 style="text-align: center;padding: 10px">{{ order_count }}</h1>
-		</div>
-	</div>
+    <div class="col-md">
+        <div class="card card-body">
+            <h5>Total Orders</h5>
+            <hr>
+            <h1 style="text-align: center;padding: 10px">{{ order_count }}</h1>
+        </div>
+    </div>
 </div>
 
 
 <br>
 <div class="row">
-	<div class="col">
-		<div class="card card-body">
-			<form method="get">
-		    <button class="btn btn-primary" type="submit">Search</button>
-		  </form>
-		</div>
-	</div>
-	
+    <div class="col">
+        <div class="card card-body">
+            <form method="get">
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+        </div>
+    </div>
+    
 </div>
 <br>
 
 <div class="row">
-	<div class="col-md">
-		<div class="card card-body">
-			<table class="table table-sm">
-				<thead>
-					<tr>
-						<th>Product</th>
-						<th>Category</th>
-						<th>Date Orderd</th>
-						<th>Status</th>
-						<th>Update</th>
-						<th>Remove</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for o in order %}
-					<tr>
-						<td>{{ o.product }}</td>
-						<td>{{ o.product.category }}</td>
-						<td>{{ o.date_created }}</td>
-						<td>{{ o.status }}</td>
-						<td><a href="" class="btn btn-sm btn-success">Update</a></td>
-						<td><a href="" class="btn btn-sm btn-danger">Delete</a></td>
-					</tr>
-					{% endfor %}
-				</tbody>
+    <div class="col-md">
+        <div class="card card-body">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Date Orderd</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for o in order %}
+                    <tr>
+                        <td>{{ o.product }}</td>
+                        <td>{{ o.product.category }}</td>
+                        <td>{{ o.date_created }}</td>
+                        <td>{{ o.status }}</td>
+                        <td><a href="{% url 'update_order' o.id %}" class="btn btn-success">Update</a></td>
+                        <td><a href="{% url 'delete_order' pk=o.id %}" class="btn btn-danger">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
 
-			</table>
-		</div>
-	</div>
+            </table>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

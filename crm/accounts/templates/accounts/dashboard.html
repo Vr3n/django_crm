@@ -26,6 +26,7 @@ CRM | Dashboard
                         <th></th>
                         <th>Customer</th>
                         <th>Phone</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,6 +35,7 @@ CRM | Dashboard
                         <td></td>
                         <td>{{ c.name }}</td>
                         <td>{{ c.phone }}</td>
+                        <td><a href="{% url 'customer' c.id %}" class="btn btn-sm btn-info">View</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -45,10 +47,11 @@ CRM | Dashboard
         <h5>LAST 5 ORDERS</h5>
         <hr>
         <div class="card card-body">
-            <a href="" class="btn btn-primary btn-sm btn-block">Create Order</a>
+            <a href="{% url 'create_order' %}" class="btn btn-primary btn-sm btn-block">Create Order</a>
             <table class="table table-sm">
                 <thead>
                     <tr>
+                        <th>Customer</th>
                         <th>Product</th>
                         <th>Date Ordered</th>
                         <th>Status</th>
@@ -59,11 +62,12 @@ CRM | Dashboard
                 <tbody>
                     {% for c in orders %}
                     <tr>
+                        <td>{{ c.customer.name }}</td>
                         <td>{{ c.product }}</td>
                         <td>{{ c.date_created }}</td>
                         <td>{{ c.status }}</td>
-                        <td><a href="" class="btn btn-success">Update</a></td>
-                        <td><a href="" class="btn btn-danger">Delete</a></td>
+                        <td><a href="{% url 'update_order' c.id %}" class="btn btn-success">Update</a></td>
+                        <td><a href="{% url 'delete_order' pk=c.id %}" class="btn btn-danger">Delete</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
