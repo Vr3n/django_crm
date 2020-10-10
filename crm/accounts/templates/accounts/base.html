@@ -15,6 +15,13 @@
     {% block title %}
     {% endblock title %}
     </title>
+
+
+    
+    {% block custom_css %}
+        
+    {% endblock custom_css %}
+        
 </head>
 <body>
 
@@ -44,6 +51,10 @@
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
-
+    
+    {% block custom_js %}
+        
+    {% endblock custom_js %}
+        
 </body>
 </html>

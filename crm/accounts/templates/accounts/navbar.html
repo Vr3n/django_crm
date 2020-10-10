@@ -1,3 +1,12 @@
+{% load static %}
+<style>
+  .hello-msg {
+    font-size: 18px;
+    color: #fff;
+    margin-right: 20px;
+  }
+</style>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="#">Navbar</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -9,4 +18,6 @@
       <a class="nav-link" href="{% url 'products' %}">Products</a>
     </div>
   </div>
+  <span class="hello-msg">Hello, {{request.user.username}} </span>
+  <span><a class="btn btn-outline-info" href="{% url 'logout' %}">Logout</a></span>
 </nav>
