@@ -13,10 +13,13 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    
+    {% if request.user.is_staff %}
     <div class="navbar-nav">
       <a class="nav-link active" href="{% url 'home' %}">Dashboard</a>
       <a class="nav-link" href="{% url 'products' %}">Products</a>
     </div>
+    {% endif %}
   </div>
   <span class="hello-msg">Hello, {{request.user.username}} </span>
   <span><a class="btn btn-outline-info" href="{% url 'logout' %}">Logout</a></span>

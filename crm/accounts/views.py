@@ -3,65 +3,82 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 
 from django.forms import inlineformset_factory
+
+from .decorators import authenticated_user, allowed_users
 from .models import *
 from .forms import OrderForm, CreateUserForm
 from .filters import OrderFilter
 
 # Create your views here.
 
+@authenticated_user
 def registerPage(request):
 
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
+    
+    form = CreateUserForm()
 
-        form = CreateUserForm()
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user_name = form.cleaned_data.get('username')
 
-        if request.method == "POST":
-            form = CreateUserForm(request.POST)
-            if form.is_valid():
-                form.save()
-                user = form.cleaned_data.get('username')
-                messages.success(request, f"{user} Registered Successfully!", extra_tags="alert alert-success alert-dismissible fade show")
-                return redirect('/login')
-            
-            else:
-                messages.error(request, form.errors, extra_tags="alert alert-danger alert-dismissible fade show")
+            group = Group.objects.get(name='customer')
+            user.groups.add(group)
 
-        context = { 'form': form }
-        return render(request, 'accounts/register.html', context)
+            messages.success(request, f"{user_name} Registered Successfully!", extra_tags="alert alert-success alert-dismissible fade show")
+            return redirect('/login')
+        
+        else:
+            messages.error(request, form.errors, extra_tags="alert alert-danger alert-dismissible fade show")
+
+    context = { 'form': form }
+    return render(request, 'accounts/register.html', context)
 
 
+@authenticated_user
 def loginPage(request):
 
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-        if request.method == "POST":
-            username = request.POST.get('username')
-            password = request.POST.get('password')
-            user = authenticate(request, username=username, password=password)
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
 
-            if user is not None:
-                login(request, user)
-                messages.success(request, f"{username} logged in Successfully!!", extra_tags="alert alert-success alert-dismissible fade show")
-                return redirect('home')
-            
-            else:
-                messages.success(request, f"Username or password incorrect!", extra_tags="alert alert-danger alert-dismissible fade show")
+        if user is not None:
+            login(request, user)
 
-        context = {}
-        return render(request, 'accounts/login.html', context)
+            if request.user.groups.exists():
+                group = request.user.groups.all()[0].name
+
+                if group == "admin":
+                    messages.success(request, f"{username} logged in Successfully!!", extra_tags="alert alert-success alert-dismissible fade show")
+                    return redirect('home')
+                
+                if group == "customer":
+                    messages.success(request, f"{username} logged in Successfully!!", extra_tags="alert alert-success alert-dismissible fade show")
+                    return redirect(f'/user')
+        
+        else:
+            messages.success(request, f"Username or password incorrect!", extra_tags="alert alert-danger alert-dismissible fade show")
+
+    context = {}
+    return render(request, 'accounts/login.html', context)
 
 
 def logoutUser(request):
+    user_name = request.user.username
     logout(request)
+
+    messages.success(request, f"{user_name} logged out successfully!")
+
     return redirect('login')
 
 
 @login_required(login_url="login")
+@allowed_users(allowed_roles=['admin'])
 def home(request):
     orders = Order.objects.all()
     customers = Customer.objects.all()
@@ -84,6 +101,17 @@ def home(request):
 
     return render(request, 'accounts/dashboard.html', context)
 
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['admin', 'customer'])
+def user_dashboard(request):
+    
+    context = {
+
+    }
+
+    return render(request, 'accounts/user_dashboard.html', context)
+
+@allowed_users(allowed_roles=['admin'])
 def contact(request):
     return render(request, 'accounts/contact.html')
 
@@ -100,6 +128,7 @@ def products(request):
 
 
 @login_required(login_url="login")
+@allowed_users(allowed_roles=['admin', 'customer'])
 def customers(request, pk):
     customer = Customer.objects.get(id=pk)
     order = customer.order_set.all()
@@ -117,6 +146,7 @@ def customers(request, pk):
     return render(request, 'accounts/customers.html', context)
 
 @login_required(login_url="login")
+@allowed_users(allowed_roles=['admin', 'customer'])
 def createOrder(request, pk):
 
     OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=4)
@@ -142,6 +172,7 @@ def createOrder(request, pk):
     return render(request, 'accounts/order_form.html', context)
 
 @login_required(login_url="login")
+@allowed_users(allowed_roles=['admin'])
 def updateOrder(request, pk):
 
     order = Order.objects.get(id=pk)
@@ -162,6 +193,7 @@ def updateOrder(request, pk):
     return render(request, 'accounts/order_form.html', context)
 
 @login_required(login_url="login")
+@allowed_users(allowed_roles=['admin'])
 def deleteOrder(request, pk):
 
     order = Order.objects.get(id=pk)
