@@ -9,7 +9,7 @@ from django.forms import inlineformset_factory
 
 from .decorators import authenticated_user, allowed_users
 from .models import *
-from .forms import OrderForm, CreateUserForm
+from .forms import OrderForm, CreateUserForm, CustomerForm
 from .filters import OrderFilter
 
 # Create your views here.
@@ -78,6 +78,24 @@ def logoutUser(request):
     messages.success(request, f"{user_name} logged out successfully!")
 
     return redirect('login')
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
+def accountSettings(request):
+    customer = request.user.customer
+    form = CustomerForm(instance=customer)
+
+    if request.method == "POST":
+        form = CustomerForm(request.POST, request.FILES, instance=customer)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Updated user successfully", extra_tags="alert alert-success alert-dismissible fade show")
+
+    context = {
+        'form': form
+    }
+    return render(request, 'accounts/account_settings.html', context)
 
 
 @login_required(login_url="login")
