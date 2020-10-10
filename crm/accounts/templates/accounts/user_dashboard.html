@@ -7,5 +7,30 @@
 
     <h2>User Profile</h2>
 
+    <div class="col-md-12">
+        <hr>
+        <div class="card card-body">
+            <h5 class="card-title">LAST 5 ORDERS</h5>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Date Ordered</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in orders %}
+                    <tr>
+                        <td>{{ c.product }}</td>
+                        <td>{{ c.date_created }}</td>
+                        <td>{{ c.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 {% endblock content %}
     
