@@ -25,13 +25,6 @@ def registerPage(request):
         if form.is_valid():
             user = form.save()
             user_name = form.cleaned_data.get('username')
-
-            group = Group.objects.get(name='customer')
-            user.groups.add(group)
-            Customer.objects.create(
-                user=user
-            )
-
             messages.success(request, f"{user_name} Registered Successfully!", extra_tags="alert alert-success alert-dismissible fade show")
             return redirect('/login')
         
