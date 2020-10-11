@@ -19,13 +19,14 @@ def create_customer_profile(sender, instance, created, **kwargs):
 post_save.connect(create_customer_profile, sender=User)
 
 
-# Updating the customer on updation of user.
+#Updating the customer on updation of user.
 def update_customer_profile(sender, instance, created, **kwrags):
 
-    if created == False:
-        instance.customer.name = instance.username
-        instance.customer.save()
-        print('User and Customer Updated')
+    if not instance.is_superuser:
+        if created == False:
+            instance.customer.name = instance.username
+            instance.customer.save()
+            print('User and Customer Updated')
 
-# Connector post_save to update_customer_profile when User model is triggered.
+#Connector post_save to update_customer_profile when User model is triggered.
 post_save.connect(update_customer_profile, sender=User)
