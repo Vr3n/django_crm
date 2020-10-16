@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from .secret_keys import keys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'django_filters',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -75,12 +77,24 @@ WSGI_APPLICATION = 'crm.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'django_crm',
+        'USER': 'vr3n',
+        'PASSWORD': keys['postgre_password'],
+        'HOST': keys['pg_host'],
+        'PORT': 5432
     }
 }
+
 
 
 # Password validation
@@ -132,3 +146,28 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 # Django Email Configuration.
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# AWS S3 Configuration.
+
+AWS_ACCESS_KEY_ID = keys['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = keys['AWS_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME = keys['AWS_STORAGE_BUCKET_NAME']
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACT = None
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+
+'''
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<CORSRule>
+    <AllowedOrigin>*</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>POST</AllowedMethod>
+    <AllowedMethod>PUT</AllowedMethod>
+    <AllowedHeader>*</AllowedHeader>
+</CORSRule>
+</CORSConfiguration>
+'''

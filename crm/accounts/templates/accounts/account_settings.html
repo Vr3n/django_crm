@@ -24,13 +24,9 @@
         </div>
         <div class="col-md-9">
             <div class="card card-body">
-                <form action="" method="post">
-                    
-                    <form action="" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{form.as_p}}
-                    </form>
-
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{form.as_p}}
                     <input type="submit" name="Update Information" class="btn btn-primary">
                 </form>
             </div>
